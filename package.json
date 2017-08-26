@@ -1,0 +1,14 @@
+{
+  "name": "Inject",
+  "version": "1.0.0",
+  "description": "Discord injections plugin",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Kura",
+  "license": "MIT",
+  "dependencies": {
+    "decompress": "^4.2.0",
+    "download": "^6.2.5",
+    "electron-devtools-installer": "^2.2.0"
+  }
+}
