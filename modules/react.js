@@ -26,12 +26,17 @@ class React {
               if (mod.displayName) {
                 this.components[mod.displayName] = mod
               } else {
-                this.plugin.debug(
-                  unkown++,
-                  'found unkown object that looks like a react component',
-                  mod,
-                  mod.displayName
-                )
+                let name = this.getName(mod)
+                if (name === undefined) {
+                  this.plugin.debug(
+                    'inject-react inject-found-react',
+                    unkown++,
+                    'found unkown object that looks like a react component',
+                    mod
+                  )
+                } else {
+                  this.components[name] = mod
+                }
               }
             })
 
@@ -62,12 +67,62 @@ class React {
       )
     } catch (ex) {
       this.plugin.error(ex.message)
-      if (!(ex instanceof TypeError && ex.message === "Cannot read property 'call' of undefined")) {
+      if (!(ex instanceof TypeError && ex.message === 'Cannot read property \'call\' of undefined')) {
         this.plugin.error(ex)
       }
     }
 
     this._root = document.getElementById('app-mount')
+  }
+
+  getName(mod) {
+    if (mod.defaultProps !== undefined) {
+      if (mod.defaultProps.type === 'button') {
+        return 'Buttons'
+      } else if (mod.defaultProps.tag === 'h5') {
+        return 'Titles'
+      } else if (mod.defaultProps.type === 'captcha') {
+        // console.log('inject-react inject-found-react', 'something related to captcha')
+      } else if (mod.defaultProps.speaking !== undefined) {
+        // console.log('inject-react inject-found-react', 'something related to speaking')
+      } else if (mod.defaultProps.name === "Twitch") {
+        // console.log('inject-react inject-found-react', 'something related to twitch')
+      } else if (mod.defaultProps.makeURL !== undefined) {
+        // console.log('inject-react inject-found-react', 'something related to avatar change')
+      }
+    }
+    if (mod.Type !== undefined) {
+      if (mod.Type === 'MFA_WARNING') {
+        return 'MfaWarning'
+      } else if (mod.Type.VIDEO === 'video' && mod.Type.VOICE === 'voice') {
+        // console.log('inject-react inject-found-react', 'something related to voice/video calls')
+      }
+    }
+    if (mod.AvatarSizes !== undefined) {
+      // console.log('inject-react inject-found-react', 'something related to avatars')
+    }
+    if (mod.modalConfig !== undefined) {
+      if (mod.modalConfig.store._actionHandlers.PRIVACY_SETTINGS_MODAL_CLOSE !== undefined) {
+        return 'ModalPrivacySettings'
+      } else if (mod.modalConfig.store._actionHandlers.CHANGE_NICKNAME_MODAL_OPEN !== undefined) {
+        return 'ModalChangeNickname'
+      } else if (mod.modalConfig.store._actionHandlers.CREATE_CHANNEL_MODAL_OPEN !== undefined) {
+        return 'ModalCreateChannel'
+      } else if (mod.modalConfig.store._actionHandlers.NOTIFICATION_SETTINGS_MODAL_OPEN !== undefined) {
+        return 'ModalNotificationSettings'
+      } else if (mod.modalConfig.store._actionHandlers.QUICKSWITCHER_SHOW !== undefined) {
+        return 'ModalQuickswitcher'
+      } else if (mod.modalConfig.store._actionHandlers.SCREENSHARE_MODAL_OPEN !== undefined) {
+        return 'ModalScreenshare'
+      } else if (mod.modalConfig.store._actionHandlers.PRUNE_GUILD_MODAL_OPEN !== undefined) {
+        return 'ModalPruneGuild'
+      } else if (mod.modalConfig.store._dispatchToken === 'ID_100') {
+        return 'ModalChangeLog'
+      }
+    }
+    if (mod.Statuses !== undefined) {
+      // console.log('inject-react inject-found-react', 'avatar with status & speak status')
+    }
   }
 
   _add (component) {
