@@ -1,3 +1,5 @@
+// const prettyJs = require('pretty-js')
+
 class React {
   constructor (plugin) {
     this.plugin = plugin
@@ -26,16 +28,17 @@ class React {
               if (mod.displayName) {
                 this.components[mod.displayName] = mod
               } else {
-                let name = this.getName(mod)
+                let name = this.getName(
+                  mod, unkown)
                 if (name === undefined) {
                   this.plugin.debug(
-                    'inject-react inject-found-react',
                     unkown++,
                     'found unkown object that looks like a react component',
                     mod
                   )
                 } else {
-                  this.components[name] = mod
+                  if (name === null) unkown++
+                  else this.components[name] = mod
                 }
               }
             })
@@ -75,7 +78,8 @@ class React {
     this._root = document.getElementById('app-mount')
   }
 
-  getName(mod) {
+  // This is mess, but it works ! :D
+  getName (mod, haha) {
     if (mod.defaultProps !== undefined) {
       if (mod.defaultProps.type === 'button') {
         return 'Buttons'
@@ -85,7 +89,7 @@ class React {
         // console.log('inject-react inject-found-react', 'something related to captcha')
       } else if (mod.defaultProps.speaking !== undefined) {
         // console.log('inject-react inject-found-react', 'something related to speaking')
-      } else if (mod.defaultProps.name === "Twitch") {
+      } else if (mod.defaultProps.name === 'Twitch') {
         // console.log('inject-react inject-found-react', 'something related to twitch')
       } else if (mod.defaultProps.makeURL !== undefined) {
         // console.log('inject-react inject-found-react', 'something related to avatar change')
@@ -123,6 +127,70 @@ class React {
     if (mod.Statuses !== undefined) {
       // console.log('inject-react inject-found-react', 'avatar with status & speak status')
     }
+
+    let renderFunction = mod.prototype.render.toString()
+    if (renderFunction.includes('return s("svg"')) {
+      if (renderFunction.includes('M17,10.5 L17,7 C17,6.45 16.55,6 16,6 L4,6 C3.45,6 3,6.45 3,7 L3,17 C3,17.55 3.45,18 4,18 L16,18 C16.55,18 17,17.55 17,17 L17,13.5 L21,17.5 L21,6.5 L17,10.5 Z')) {
+        return 'SvgVideoCall'
+      } else if (renderFunction.includes('M21,6.5 L17,10.5 L17,7 C17,6.45 16.55,6 16,6 L9.82,6 L21,17.18 L21,6.5 Z M4.73,6 L4,6 C3.45,6 3,6.45 3,7 L3,17 C3,17.55 3.45,18 4,18 L16,18 C16.21,18 16.39,17.92 16.54,17.82 L4.73,6 Z')) {
+        return 'SvgStopVideoCall'
+      } else if (renderFunction.includes('M20,17 C21.1,17 21.99,16.1 21.99,15 L22,5 C22,3.89 21.1,3 20,3 L4,3 C2.89,3 2,3.89 2,5 L2,15 C2,16.1 2.89,17 4,17 L11,17 L11,19 L9,19 L9,21 L15,21 L15,19 L13,19 L13,17 L20,17 Z M13,13.47 L13,11.28 C10.22,11.28 8.39,12.13 7,14 C7.56,11.33 9.11,8.67 13,8.13 L13,6 L17,9.73 L13,13.47 Z')) {
+        return 'SvgScreenShare'
+      } else if (renderFunction.includes('M19 13L13 13 13 19 11 19 11 13 5 13 5 11 11 11 11 5 13 5 13 11 19 11')) {
+        return 'SvgClose'
+      }
+      // console.log('inject-react inject-found-react', 'svg')
+    } else if (renderFunction.includes('(t === v.SPINNING_CIRCLE)')) {
+      return 'SvgSpinningCircle'
+    } else if (renderFunction.includes('className:"instant-invite-settings"')) {
+      // create invite dialog ?
+      // console.log('inject-react inject-found-react', 'something related to instant invites')
+    } else if (renderFunction.includes('action:this.handleJumpToChannel')) {
+      // jump to... present ?
+    } else if (renderFunction.includes('label:c.default.Messages.MARK_AS_READ')) {
+      return 'ButtonMarkAsRead'
+    } else if (renderFunction.includes('header:p.default.Messages.BAN_CONFIRM_TITLE')) {
+      return 'ModalBanUser'
+    } else if (renderFunction.includes('header:d.default.Messages.KICK_USER_TITLE')) {
+      return 'ModalKickUser'
+    } else if (renderFunction.includes('https://support.google.com/accounts/answer/1066447?hl=en')) {
+      return 'ModalAdd2FA'
+    } else if (renderFunction.includes('c.default.Messages.TRANSFER_OWNERSHIP')) {
+      return 'ModalTransferOwnership'
+    } else if (renderFunction.includes('speaking:e.speaking,canDrag:i[h.Permissions.MOVE_MEMBERS]')) {
+      return 'ChannelVoiceUser'
+    } else if (renderFunction.includes('P.default.Messages.NO_SEND_MESSAGES_PERMISSION_PLACEHOLDER')) {
+      return 'ChannelTextArea'
+    } else if (renderFunction.includes('M.default.pictureInPictureVideo')) {
+      return 'VideoPictureInPicture'
+    } else if (renderFunction.includes('T.default.Messages.VERIFICATION_PHONE_DESCRIPTION')) {
+      return 'ModalVerifyPhone'
+    } else if (renderFunction.includes('T.default.Messages.NEW_TERMS_TITLE')) {
+      return 'ModalNewToS'
+    } else if (renderFunction.includes('b.default.Messages.SHORTCUT_RECORDER_BUTTON_RECORDING')) {
+      return 'InputShortcut'
+    } else if (renderFunction.includes('c.default.Messages.NSFW_TITLE')) {
+      return 'ChannelNsfwWarning'
+    } else if (renderFunction.includes('render:this.renderEmojiPickerPopout')) {
+      return 'EmojiPickerPopout'
+    } else if (renderFunction.includes('S.default.Messages.VERIFY_EMAIL_BODY_RESENT')) {
+      return 'ModalEmailVerification'
+    } else if (renderFunction.includes('fileName:"discord_backup_codes.txt",')) {
+      return 'UserSettings2FA'
+    } else if (renderFunction.includes('c.default.Messages.TWO_FA_ENTER_TOKEN_LABEL')) {
+      return 'ModalEnter2FAToken'
+    } else if (renderFunction.includes('className: "remove-webhook round-remove-button"')) {
+      return 'WebhookItem'
+    } else if (renderFunction.includes('p.default.Messages.WEBHOOK_MODAL_TITLE')) {
+      return 'ModalEditWebhook'
+    } else if (renderFunction.includes('c.default.Messages.FORM_LABEL_REPORT_REASON')) {
+      return 'ModalReport'
+    } else if (renderFunction.includes('c.default.Messages.SETTINGS_NOTICE_MESSAGE')) {
+      return 'SettingsUnsavedChanges'
+    }
+
+    // console.log('inject-react inject-render-react', haha, prettyJs(renderFunction))
+    // return null
   }
 
   _add (component) {
