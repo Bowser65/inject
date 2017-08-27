@@ -1,4 +1,4 @@
-// const prettyJs = require('pretty-js')
+const prettyJs = require('pretty-js')
 
 class React {
   constructor (plugin) {
@@ -143,8 +143,7 @@ class React {
     } else if (renderFunction.includes('(t === v.SPINNING_CIRCLE)')) {
       return 'SvgSpinningCircle'
     } else if (renderFunction.includes('className:"instant-invite-settings"')) {
-      // create invite dialog ?
-      // console.log('inject-react inject-found-react', 'something related to instant invites')
+      // ????
     } else if (renderFunction.includes('action:this.handleJumpToChannel')) {
       // jump to... present ?
     } else if (renderFunction.includes('label:c.default.Messages.MARK_AS_READ')) {
@@ -162,8 +161,12 @@ class React {
     } else if (renderFunction.includes('P.default.Messages.NO_SEND_MESSAGES_PERMISSION_PLACEHOLDER')) {
       return 'ChannelTextArea'
     } else if (renderFunction.includes('M.default.pictureInPictureVideo')) {
-      return 'VideoPictureInPicture'
+      return 'PictureInPictureVideo'
+    } else if (renderFunction.includes('E.default.pictureInPicture')){
+      return 'PictureInPictureContainer'
     } else if (renderFunction.includes('T.default.Messages.VERIFICATION_PHONE_DESCRIPTION')) {
+      return 'ModalVerifyPhoneCode'
+    } else if (renderFunction.includes('d.default)("ui-phone-field"')) {
       return 'ModalVerifyPhone'
     } else if (renderFunction.includes('T.default.Messages.NEW_TERMS_TITLE')) {
       return 'ModalNewToS'
@@ -179,7 +182,7 @@ class React {
       return 'UserSettings2FA'
     } else if (renderFunction.includes('c.default.Messages.TWO_FA_ENTER_TOKEN_LABEL')) {
       return 'ModalEnter2FAToken'
-    } else if (renderFunction.includes('className: "remove-webhook round-remove-button"')) {
+    } else if (renderFunction.includes('className:"remove-webhook round-remove-button"')) {
       return 'WebhookItem'
     } else if (renderFunction.includes('p.default.Messages.WEBHOOK_MODAL_TITLE')) {
       return 'ModalEditWebhook'
@@ -187,10 +190,22 @@ class React {
       return 'ModalReport'
     } else if (renderFunction.includes('c.default.Messages.SETTINGS_NOTICE_MESSAGE')) {
       return 'SettingsUnsavedChanges'
+    } else if (renderFunction.includes('this.props.options.map(this.renderRadio)')) {
+      // radio ?
+    } else if (renderFunction.includes('c.default.Messages.FORM_LABEL_ROLES_PRO_TIP')) {
+      return 'Protip'
+    } else if (renderFunction.includes('c.default)("ui-permission-override-item"')) {
+      return 'ChannelPermissionOverride'
+    } else if (renderFunction.includes('switch(t){case g.DENY:r=n(a?2989:2988),i=g.DENY;break;case g.ALLOW:r=n(a?2975:2974),i=g.ALLOW;break;case g.PASSTHROUGH:default:r=n(a?2987:2986),i=g.PASSTHROUGH}')) {
+      return 'ChannelPermissionOverrideInput'
     }
 
-    // console.log('inject-react inject-render-react', haha, prettyJs(renderFunction))
-    // return null
+    /* let obj = {}
+    Object.keys(mod).forEach(k => {
+      obj[k] = mod[k]
+    })
+    console.log('inject-react inject-render-react', haha, obj, prettyJs(renderFunction), renderFunction)
+    return null */
   }
 
   _add (component) {
