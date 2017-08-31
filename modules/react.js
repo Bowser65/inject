@@ -1,4 +1,4 @@
-const prettyJs = require('pretty-js')
+// const prettyJs = require('pretty-js')
 
 class React {
   constructor (plugin) {
@@ -37,8 +37,9 @@ class React {
                     mod
                   )
                 } else {
-                  if (name === null) unkown++
-                  else this.components[name] = mod
+                  // if (name === null) unkown++
+                  // else
+                  this.components[name] = mod
                 }
               }
             })
@@ -232,7 +233,7 @@ class React {
     } else if (component.constructor.displayName || component.displayName) {
       // we decided to ignore this component
     } else {
-      return
+      return // <- phpStorm don't like this
       this.plugin.debug('Failed to detect component', typeof component, '=>')
       this.plugin.debug(
         '  - Class',
